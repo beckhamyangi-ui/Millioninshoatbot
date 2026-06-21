@@ -1,0 +1,27 @@
+import telebot
+import os
+
+TOKEN = os.getenv("8917754455:AAFUb7yLIGW2rDJ9jYq5ps4kymHrmzmTXYo")
+GROUP = "@zarafshon_arzon_uylar"
+
+bot = telebot.TeleBot(TOKEN)
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.reply_to(message, "Assalomu alaykum! E'loningizni yuboring.")
+
+@bot.message_handler(content_types=['text', 'photo'])
+def forward_post(message):
+    try:
+        if message.content_type == 'text':
+            bot.send_message(GROUP, message.text)
+        elif message.content_type == 'photo':
+            file_id = message.photo[-1].file_id
+            caption = message.caption if message.caption else ""
+            bot.send_photo(GROUP, file_id, caption=caption)
+
+        bot.reply_to(message, "E'lon guruhga yuborildi ?")
+    except Exception as e:
+        bot.reply_to(message, f"Xatolik: {e}")
+
+bot.infinity_polling()
